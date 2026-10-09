@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品列表 - 自動分類版</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  
+  <style>
+    /* ... 這裡保留原本的 CSS，我為了版面簡潔只新增分類按鈕的樣式 ... */
+    body { font-family: -apple-system, sans-serif; background: #f9fafb; margin: 0; padding: 20px; }
+    .header-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 10px; max-width: 1200px; margin: 0 auto 20px; gap: 10px; }
+    
+    /* 分類按鈕選單樣式 */
+    .category-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+    .cat-btn { padding: 6px 14px; background: #e5e7eb; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; color: #374151; transition: 0.2s; }
+    .cat-btn:hover { background: #d1d5db; }
+    .cat-btn.active { background: #3b82f6; color: white; }
+
+    .filter-btn { padding: 8px 16px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 500; }
+    .filter-btn.active { background: #111827; color: white; border-color: #111827; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .product-card { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #ffffff; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+    .img-container { position: relative; width: 100%; height: 200px; background-color: #f3f4f6; }
+    .product-img { width: 100%; height: 100%; object-fit: cover; }
+    .fav-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 18px; z-index: 10; }
+    .fav-btn.active { color: #e11d48; }
+    .product-info { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
+    .tag { font-size: 11px; background: #f3f4f6; padding: 2px 8px; border-radius: 4px; align-self: flex-start; margin-bottom: 6px; color: #4b5563; }
+    .product-title { font-size: 16px; font-weight: 600; margin: 0 0 6px 0; color: #1f2937; }
+    .product-desc { font-size: 13px; color: #6b7280; margin: 0 0 12px 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .product-price { font-size: 18px; font-weight: bold; color: #e11d48; margin-top: auto; margin-bottom: 12px; }
+    .action-btn { text-align: center; background: #111827; color: white; padding: 9px; border-radius: 6px; text-decoration: none; font-size: 13px; display: inline-block; transition: background-color 0.2s; }
+    .action-btn:hover { background-color: #374151; }
+    .status-msg { text-align: center; grid-column: 1 / -1; color: #6b7280; padding: 40px; }
+    #detail-view { display: none; max-width: 800px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; }
+    .back-nav { padding: 16px; border-bottom: 1px solid #e5e7eb; }
+    .detail-content { display: flex; flex-direction: column; }
+    @media (min-width: 600px) { .detail-content { flex-direction: row; } }
+    .detail-img-box { flex: 1; position: relative; }
+    .detail-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-info-box { flex: 1; padding: 32px; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+
+  <div id="list-view">
+    <div class="header-actions">
+      <!-- 這裡會動態產生分類按鈕 -->
+      <div class="category-nav" id="category-nav">
+        <!-- 預設一定有一個「全部」按鈕 -->
+        <button class="cat-btn active" onclick="setCategory('全部')">全部商品</button>
+      </div>
+      <button id="toggle-fav-view" class="filter-btn">只顯示我的最愛 ❤️</button>
+    </div>
+    
+    <div class="product-grid" id="product-grid">
+      <div class="status-msg">正在載入商品資料...</div>
+    </div>
+  </div>
+
+  <div id="detail-view">
+    <div class="back-nav"><button onclick="hideDetail()">← 返回列表</button></div>
+    <div id="detail-container"></div>
+  </div>
+
+  <script>
+    // 你的 CSV 網址（發布到網路的 CSV 連結）
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJ3LAb3l4m1BxRdcNH9UsMFXPbRwMuvSAXLbjm3XVYN8o_CVsQQQQO0YA9zgNNAXcys_5LqWdzehok/pub?output=csv";
+
+    // 預設資料：依據您目前的試算表結構與商品資料設定（離線或載入中也能直接展示）
+    let productsData = [
+      {
+        id: "p01",
+        img: "images/badge.jpg",
+        tag: "新品",
+        title: "徽章",
+        desc: "精美造型徽章",
+        price: "200",
+        link: "https://www.google.com/?client=safari&channel=mac_bm",
+        btnText: "私訊",
+        category: "配件"
+      }
+    ];
+
+    let currentCategory = '全部'; // 紀錄目前選擇的分類
+    let showingOnlyFavorites = false;
+
+    const gridContainer = document.getElementById('product-grid');
+    const categoryNav = document.getElementById('category-nav');
+
+    // === 擷取 Google Drive 檔案 ID ===
+    function extractDriveId(url) {
+      if (!url) return '';
+      const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      return match ? match[1] : '';
+    }
+
+    // === 自動處理圖片網址（支援 images/ 或 image/ 本地路徑、純檔名、Google Drive、外部網址） ===
+    function formatImageUrl(url) {
+      if (!url) return '';
+      url = url.trim();
+
+      // 1. 若是 Google Drive 雲端硬碟連結，自動轉換為縮圖網址
+      const driveId = extractDriveId(url);
+      if (driveId) {
+        return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
+      }
+
+      // 2. 若是完整的 http/https 外部網址，直接返回
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+      }
+
+      // 3. 本地路徑支援：若試算表只填寫了檔名（如 "badge.jpg" 或 "徽章.jpg"），自動加上 "images/"
+      if (!url.startsWith('images/') && !url.startsWith('image/') && !url.startsWith('./')) {
+        return `images/${url}`;
+      }
+
+      return url;
+    }
+
+    // === 圖片智慧載入容錯（若 images/ 找不到自動嘗試 image/，Google Drive 失敗嘗試備援 CDN） ===
+    window.handleImageError = function(img) {
+      const src = img.getAttribute('src') || '';
+      if (!img.dataset.retry) {
+        img.dataset.retry = '1';
+        if (src.startsWith('images/')) {
+          img.src = src.replace('images/', 'image/');
+          return;
+        } else if (src.startsWith('image/')) {
+          img.src = src.replace('image/', 'images/');
+          return;
+        }
+        const driveId = extractDriveId(src);
+        if (driveId) {
+          img.src = `https://lh3.googleusercontent.com/d/${driveId}`;
+          return;
+        }
+      }
+    };
+
+    // === 動態產生分類選單 ===
+    function generateCategoryButtons() {
+      // 從資料中萃取出所有不重複的分類 (排除空白)
+      const categories = [...new Set(productsData.map(p => p.category ? p.category.trim() : ''))].filter(c => c);
+      
+      // 重置按鈕區塊，加入「全部」
+      categoryNav.innerHTML = `<button class="cat-btn ${currentCategory === '全部' ? 'active' : ''}" onclick="setCategory('全部')">全部商品</button>`;
+      
+      // 產生其他分類按鈕
+      categories.forEach(cat => {
+        categoryNav.innerHTML += `<button class="cat-btn ${currentCategory === cat ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>`;
+      });
+    }
+
+    // === 點擊切換分類 ===
+    window.setCategory = function(cat) {
+      currentCategory = cat;
+      showingOnlyFavorites = false; 
+      document.getElementById('toggle-fav-view').classList.remove('active');
+      document.getElementById('toggle-fav-view').innerText = "只顯示我的最愛 ❤️";
+      
+      generateCategoryButtons();
+      renderProducts();
+    };
+
+    function getFavorites() {
+      return JSON.parse(localStorage.getItem('my_favorites') || '[]');
+    }
+
+    window.toggleFavorite = function(event, productId, fromDetail = false) {
+      if (event) event.stopPropagation();
+      let favs = getFavorites();
+      if (favs.includes(productId)) {
+        favs = favs.filter(id => id !== productId);
+      } else {
+        favs.push(productId);
+      }
+      localStorage.setItem('my_favorites', JSON.stringify(favs));
+      renderProducts();
+      if (fromDetail) showDetail(productId); 
+    };
+
+    function renderProducts() {
+      const favs = getFavorites();
+      gridContainer.innerHTML = ''; 
+      
+      let displayProducts = productsData;
+      
+      // 1. 分類過濾
+      if (currentCategory !== '全部') {
+        displayProducts = displayProducts.filter(p => (p.category ? p.category.trim() : '') === currentCategory);
+      }
+
+      // 2. 最愛過濾
+      if (showingOnlyFavorites) {
+        displayProducts = displayProducts.filter(p => favs.includes(p.id));
+      }
+
+      if (displayProducts.length === 0) {
+        gridContainer.innerHTML = `<div class="status-msg">此分類目前沒有商品。</div>`;
+        return;
+      }
+
+      displayProducts.forEach(product => {
+        const isFav = favs.includes(product.id);
+        const imgUrl = formatImageUrl(product.img);
+        const priceDisplay = String(product.price).includes('$') ? product.price : `NT$ ${product.price}`;
+
+        gridContainer.innerHTML += `
+          <div class="product-card" onclick="showDetail('${product.id}')">
+            <div class="img-container">
+              <img class="product-img" src="${imgUrl}" alt="${product.title || ''}" loading="lazy" onerror="handleImageError(this)">
+              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event, '${product.id}')">${isFav ? '❤️' : '🤍'}</button>
+            </div>
+            <div class="product-info">
+              ${product.tag ? `<span class="tag">${product.tag}</span>` : ''}
+              <h3 class="product-title">${product.title || ''}</h3>
+              ${product.desc ? `<p class="product-desc">${product.desc}</p>` : ''}
+              <div class="product-price">${priceDisplay}</div>
+              <a class="action-btn" href="${product.link || '#'}" target="_blank" onclick="event.stopPropagation()">${product.btnText || '私訊'}</a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('toggle-fav-view').addEventListener('click', (e) => {
+      showingOnlyFavorites = !showingOnlyFavorites;
+      const btn = e.target;
+      if (showingOnlyFavorites) {
+        btn.classList.add('active');
+        btn.innerText = "顯示所有商品";
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = "只顯示我的最愛 ❤️";
+      }
+      renderProducts();
+    });
+
+    window.showDetail = function(productId) {
+      const product = productsData.find(p => p.id === productId);
+      if (!product) return;
+      const isFav = getFavorites().includes(product.id);
+      const imgUrl = formatImageUrl(product.img);
+      const priceDisplay = String(product.price).includes('$') ? product.price : `NT$ ${product.price}`;
+
+      document.getElementById('list-view').style.display = 'none';
+      document.getElementById('detail-view').style.display = 'block';
+      window.scrollTo(0, 0);
+
+      document.getElementById('detail-container').innerHTML = `
+        <div class="detail-content">
+          <div class="detail-img-box">
+            <img src="${imgUrl}" alt="${product.title || ''}" onerror="handleImageError(this)">
+            <button class="fav-btn ${isFav ? 'active' : ''}" style="top:20px; right:20px; width:44px; height:44px; font-size:24px;" onclick="toggleFavorite(event, '${product.id}', true)">${isFav ? '❤️' : '🤍'}</button>
+          </div>
+          <div class="detail-info-box">
+            ${product.tag ? `<span class="tag">${product.tag}</span>` : ''}
+            <h1 style="margin:10px 0;">${product.title || ''}</h1>
+            ${product.desc ? `<p style="color:#4b5563; line-height:1.6; margin-bottom:24px;">${product.desc}</p>` : ''}
+            <div style="font-size:28px; font-weight:bold; color:#e11d48; margin-bottom:24px;">${priceDisplay}</div>
+            <a style="text-align:center; background:#111827; color:#fff; padding:14px; border-radius:8px; text-decoration:none; font-weight:bold;" href="${product.link || '#'}" target="_blank">${product.btnText || '私訊'}</a>
+          </div>
+        </div>
+      `;
+    };
+
+    window.hideDetail = function() {
+      document.getElementById('detail-view').style.display = 'none';
+      document.getElementById('list-view').style.display = 'block';
+    };
+
+    function loadDataFromCSV() {
+      Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: function(h) {
+          return h.trim();
+        },
+        complete: function(results) {
+          if (results.data && results.data.length > 0) {
+            const validData = results.data.filter(row => row.id && row.id.trim() !== "");
+            if (validData.length > 0) {
+              productsData = validData;
+              generateCategoryButtons();
+              renderProducts();
+            }
+          }
+        },
+        error: function(err) {
+          console.warn("CSV 連線載入失敗，維持展示預設資料", err);
+        }
+      });
+    }
+
+    // 初始化頁面（先顯示預設商品，再同步 Google 試算表最新資料）
+    generateCategoryButtons();
+    renderProducts();
+    loadDataFromCSV();
+  </script>
+</body>
+</html>
