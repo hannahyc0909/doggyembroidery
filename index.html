@@ -3,92 +3,1203 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>商品列表 - 自動分類版</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  
-  <style>
-    /* ... 這裡保留原本的 CSS，我為了版面簡潔只新增分類按鈕的樣式 ... */
-    body { font-family: -apple-system, sans-serif; background: #f9fafb; margin: 0; padding: 20px; }
-    .header-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 10px; max-width: 1200px; margin: 0 auto 20px; gap: 10px; }
-    
-    /* 分類按鈕選單樣式 */
-    .category-nav { display: flex; gap: 10px; flex-wrap: wrap; }
-    .cat-btn { padding: 6px 14px; background: #e5e7eb; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; color: #374151; transition: 0.2s; }
-    .cat-btn:hover { background: #d1d5db; }
-    .cat-btn.active { background: #3b82f6; color: white; }
+  <title>Doggy Embroidery 刺繡選品所 ｜ 手工刺繡・追星小物・客製配件</title>
 
-    .filter-btn { padding: 8px 16px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 500; }
-    .filter-btn.active { background: #111827; color: white; border-color: #111827; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-    .product-card { border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; background: #ffffff; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
-    .img-container { position: relative; width: 100%; height: 200px; background-color: #f3f4f6; }
-    .product-img { width: 100%; height: 100%; object-fit: cover; }
-    .fav-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; font-size: 18px; z-index: 10; }
-    .fav-btn.active { color: #e11d48; }
-    .product-info { padding: 14px; display: flex; flex-direction: column; flex-grow: 1; }
-    .tag { font-size: 11px; background: #f3f4f6; padding: 2px 8px; border-radius: 4px; align-self: flex-start; margin-bottom: 6px; color: #4b5563; }
-    .product-title { font-size: 16px; font-weight: 600; margin: 0 0 6px 0; color: #1f2937; }
-    .product-desc { font-size: 13px; color: #6b7280; margin: 0 0 12px 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .product-price { font-size: 18px; font-weight: bold; color: #e11d48; margin-top: auto; margin-bottom: 12px; }
-    .action-btn { text-align: center; background: #111827; color: white; padding: 9px; border-radius: 6px; text-decoration: none; font-size: 13px; display: inline-block; transition: background-color 0.2s; }
-    .action-btn:hover { background-color: #374151; }
-    .status-msg { text-align: center; grid-column: 1 / -1; color: #6b7280; padding: 40px; }
-    #detail-view { display: none; max-width: 800px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; }
-    .back-nav { padding: 16px; border-bottom: 1px solid #e5e7eb; }
-    .detail-content { display: flex; flex-direction: column; }
-    @media (min-width: 600px) { .detail-content { flex-direction: row; } }
-    .detail-img-box { flex: 1; position: relative; }
-    .detail-img-box img { width: 100%; height: 100%; object-fit: cover; }
-    .detail-info-box { flex: 1; padding: 32px; display: flex; flex-direction: column; }
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- PapaParse for CSV loading -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-dark: #7c3aed;
+      --brand-brown: #5c4033;
+      --brand-accent: #e07a5f;
+      --bg-main: #faf9f6;
+      --bg-card: #ffffff;
+      --text-main: #27272a;
+      --text-muted: #71717a;
+      --text-light: #a1a1aa;
+      --border-color: #ebe7df;
+      --tag-new: #fef3c7;
+      --tag-new-text: #92400e;
+      --tag-stock: #dcfce7;
+      --tag-stock-text: #166534;
+      --tag-hot: #fee2e2;
+      --tag-hot-text: #991b1b;
+      --tag-custom: #ede9fe;
+      --tag-custom-text: #5b21b6;
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.08);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --site-max-width: 1440px; /* 版面拉大，讓寬螢幕與平板空間更寬闊充裕 */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* === 公告欄 Announcement Bar === */
+    .announcement-bar {
+      background: linear-gradient(90deg, #fcefe8, #fdf4f0);
+      color: #9c5c42;
+      font-size: 13px;
+      padding: 8px 16px;
+      text-align: center;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(224, 122, 95, 0.15);
+      letter-spacing: 0.3px;
+    }
+
+    /* === 頂部導覽列 Navbar === */
+    .site-header {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      transition: all 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: #fbf0ea;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #fae1d6;
+    }
+
+    .brand-text h1 {
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #2e2621;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .social-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .social-btn.ig {
+      background: #fdf2f4;
+      color: #d82b6b;
+      border-color: #fbd6df;
+    }
+    .social-btn.ig:hover {
+      background: #fae1e7;
+      transform: translateY(-1px);
+    }
+
+    .social-btn.line {
+      background: #f0fdf4;
+      color: #16a34a;
+      border-color: #dcfce7;
+    }
+    .social-btn.line:hover {
+      background: #dcfce7;
+      transform: translateY(-1px);
+    }
+
+    .social-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* === Hero 品牌主橫幅 === */
+    .hero-section {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 20px auto 12px;
+      padding: 0 24px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #fff7f2 0%, #fff 100%);
+      border: 1px solid #f5e8df;
+      border-radius: var(--radius-lg);
+      padding: 32px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-card::after {
+      content: '🧵';
+      position: absolute;
+      right: 24px;
+      bottom: -15px;
+      font-size: 88px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #b86246;
+      background: rgba(224, 122, 95, 0.12);
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 14px;
+      color: #716358;
+      max-width: 660px;
+      margin: 0 auto;
+    }
+
+    /* === 控制欄（搜尋、最愛、顯示模式） === */
+    .controls-container {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 18px auto 24px;
+      padding: 0 24px;
+    }
+
+    .search-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 11px 16px 11px 40px;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: #d19a7e;
+      box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .right-tools-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tool-pill-btn {
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: #52525b;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tool-pill-btn:hover {
+      background: #f7f4f0;
+      border-color: #d4cdc5;
+    }
+
+    .fav-filter-btn {
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1px solid #fecdd3;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e11d48;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .fav-filter-btn:hover {
+      background: #fff1f2;
+    }
+
+    .fav-filter-btn.active {
+      background: #e11d48;
+      color: #ffffff;
+      border-color: #e11d48;
+      box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+    }
+
+    .category-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ede8e1;
+    }
+
+    .category-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .cat-btn {
+      padding: 7px 18px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #52525b;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cat-btn:hover {
+      border-color: #d4cdc5;
+      background: #f7f4f0;
+      color: var(--text-main);
+    }
+
+    .cat-btn.active {
+      background: #2e2621;
+      color: #ffffff;
+      border-color: #2e2621;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(46, 38, 33, 0.2);
+    }
+
+    /* === 商品網格列表 === */
+    .product-grid {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 0 auto 60px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    /* 商品卡片 */
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: #ded8ce;
+    }
+
+    /* ★ 電腦版、平板、手機統一嚴格呈現 1:1 正方形圖框 ★ */
+    .img-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1; /* 1:1 正方形 */
+      background-color: #f8f6f2; /* 柔和淺米底色，使透明與各式比例圖片完美融入 */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ★ 預設完整顯示（contain）：絕不裁切上下或後半段任何內容 ★ */
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+      transition: transform 0.35s ease;
+      display: block;
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.04);
+    }
+
+    /* 滿版模式切換 */
+    body.img-fill-mode .product-img {
+      object-fit: cover;
+      padding: 0;
+    }
+
+    /* 愛心收藏按鈕 */
+    .fav-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .fav-btn:hover {
+      transform: scale(1.12);
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .fav-btn.active {
+      background: #fff;
+      color: #e11d48;
+    }
+
+    /* 卡片內容區 */
+    .product-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .tag-category-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      line-height: 1.2;
+    }
+
+    .tag-new { background: var(--tag-new); color: var(--tag-new-text); }
+    .tag-stock { background: var(--tag-stock); color: var(--tag-stock-text); }
+    .tag-hot { background: var(--tag-hot); color: var(--tag-hot-text); }
+    .tag-default { background: #f3f4f6; color: #4b5563; }
+
+    .category-label {
+      font-size: 11px;
+      color: var(--text-light);
+      background: #f4f2ee;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .product-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #27272a;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 38px;
+    }
+
+    .price-action-row {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .product-price {
+      font-weight: 700;
+      color: #c2410c;
+      font-size: 18px;
+      display: flex;
+      align-items: baseline;
+      gap: 2px;
+    }
+
+    .price-currency {
+      font-size: 12px;
+      font-weight: 600;
+      color: #c2410c;
+    }
+
+    .price-inquire {
+      font-size: 13px;
+      font-weight: 600;
+      color: #9a6850;
+      background: #fbf0ea;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #2e2621;
+      color: #ffffff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .action-btn:hover {
+      background: #4a3d35;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(46, 38, 33, 0.25);
+    }
+
+    /* === 狀態提示 === */
+    .status-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--border-color);
+    }
+
+    .status-msg-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* === 商品詳情頁面 Detail View === */
+    #detail-view {
+      display: none;
+      max-width: 1040px; /* 詳情視圖拉大範圍 */
+      margin: 16px auto 60px;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .detail-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .detail-top-nav {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #faf8f5;
+    }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #52525b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #ede8e1;
+      color: #27272a;
+    }
+
+    .detail-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media (min-width: 768px) {
+      .detail-content {
+        flex-direction: row;
+      }
+    }
+
+    /* ★ 詳情頁大圖也嚴格保持 1:1 正方形，完整呈現不裁切 ★ */
+    .detail-img-box {
+      flex: 1.1;
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: #f8f6f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .detail-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 16px;
+      display: block;
+    }
+
+    body.img-fill-mode .detail-img-box img {
+      object-fit: cover;
+      padding: 0;
+    }
+
+    .detail-info-box {
+      flex: 1;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .detail-heading h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #27272a;
+      margin: 10px 0 8px;
+      line-height: 1.3;
+    }
+
+    .detail-desc {
+      font-size: 14px;
+      color: #52525b;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .detail-price-box {
+      padding: 14px 18px;
+      background: #faf8f5;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .detail-price-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #c2410c;
+    }
+
+    .order-tips-box {
+      background: #fcf6ee;
+      border: 1px solid #fae6cb;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #8c5825;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .order-tips-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .detail-cta-row {
+      display: flex;
+      gap: 12px;
+      flex-direction: column;
+    }
+
+    .cta-primary {
+      background: #2e2621;
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .cta-primary:hover {
+      background: #4a3d35;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(46, 38, 33, 0.2);
+    }
+
+    .cta-secondary {
+      background: #fdf2f4;
+      color: #d82b6b;
+      border: 1px solid #fbd6df;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .cta-secondary:hover {
+      background: #fae1e7;
+    }
+
+    /* === 頁尾 Footer === */
+    .site-footer {
+      margin-top: auto;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 40px 24px 30px;
+    }
+
+    .footer-content {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .footer-brand h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 6px;
+    }
+
+    .footer-brand p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      width: 100%;
+      text-align: center;
+      padding-top: 24px;
+      margin-top: 24px;
+      border-top: 1px solid #f2ede6;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    /* === 平板響應式優化 (641px ~ 1024px) === */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 18px;
+        padding: 0 20px;
+      }
+      .controls-container, .hero-section, .nav-container, .site-footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+
+    /* === 手機版響應式優化 (<= 640px) === */
+    @media (max-width: 640px) {
+      body {
+        padding: 0;
+      }
+
+      .nav-container {
+        padding: 10px 14px;
+      }
+
+      .brand-text h1 {
+        font-size: 17px;
+      }
+
+      .brand-text p {
+        display: none;
+      }
+
+      .social-btn span {
+        display: none; /* 手機版只顯示圖標，維持版面精緻簡潔 */
+      }
+
+      .hero-section {
+        margin: 12px auto 8px;
+        padding: 0 12px;
+      }
+
+      .hero-card {
+        padding: 20px 16px;
+      }
+
+      .hero-title {
+        font-size: 20px;
+      }
+
+      .hero-desc {
+        font-size: 13px;
+        margin-bottom: 12px;
+      }
+
+      .controls-container {
+        padding: 0 12px;
+        margin: 12px auto 16px;
+      }
+
+      .search-box {
+        max-width: 100%;
+      }
+
+      /* 手機版商品卡片維持雙欄正方形比例，瀏覽最舒適 */
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 12px;
+      }
+
+      .product-info {
+        padding: 10px;
+      }
+
+      .product-title {
+        font-size: 14px;
+      }
+
+      /* 手機版簡介顯示 2 行，不再隱藏 */
+      .product-desc {
+        font-size: 12px;
+        margin-bottom: 8px;
+        min-height: auto;
+        -webkit-line-clamp: 2;
+      }
+
+      .price-action-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .action-btn {
+        width: 100%;
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+
+      .product-price {
+        font-size: 15px;
+      }
+
+      #detail-view {
+        padding: 0 12px;
+      }
+
+      .detail-info-box {
+        padding: 20px 16px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <div id="list-view">
-    <div class="header-actions">
-      <!-- 這裡會動態產生分類按鈕 -->
-      <div class="category-nav" id="category-nav">
-        <!-- 預設一定有一個「全部」按鈕 -->
-        <button class="cat-btn active" onclick="setCategory('全部')">全部商品</button>
-      </div>
-      <button id="toggle-fav-view" class="filter-btn">只顯示我的最愛 ❤️</button>
-    </div>
-    
-    <div class="product-grid" id="product-grid">
-      <div class="status-msg">正在載入商品資料...</div>
-    </div>
+  <!-- 公告小跑馬燈 / 提示條 -->
+  <div class="announcement-bar">
+    🧵 每一針都是用心手作・追星小物與客製刺繡選品｜歡迎私訊小盒子訂購與詢價 ✨
   </div>
 
-  <div id="detail-view">
-    <div class="back-nav"><button onclick="hideDetail()">← 返回列表</button></div>
-    <div id="detail-container"></div>
-  </div>
+  <!-- 頂部導覽列 -->
+  <header class="site-header">
+    <div class="nav-container">
+      <div class="brand-area" onclick="hideDetail(); setCategory('全部');">
+        <div class="brand-logo-icon">🪡</div>
+        <div class="brand-text">
+          <h1 id="brand-title-display">Doggy Embroidery</h1>
+          <p id="brand-subtitle-display">手工刺繡・客製配件・追星選品</p>
+        </div>
+      </div>
+
+      <!-- 社群連結快捷按鈕 -->
+      <div class="social-links">
+        <a id="nav-ig-link" href="https://instagram.com/" target="_blank" class="social-btn ig" title="追蹤我們的 Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>Instagram</span>
+        </a>
+        <a id="nav-line-link" href="https://line.me/" target="_blank" class="social-btn line" title="加入 LINE 詢問">
+          <svg viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.019 9.608.391.084.922.258 1.057.592.121.303.079.777.039 1.085l-.171 1.026c-.053.303-.243 1.185 1.039.646 1.281-.539 6.918-4.077 9.444-6.982 1.745-1.921 2.573-3.874 2.573-5.975z"/></svg>
+          <span>LINE 客服</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主內容列表區塊 -->
+  <main id="list-view">
+    <!-- Hero 品牌簡介 -->
+    <section class="hero-section">
+      <div class="hero-card">
+        <span class="hero-tag">HANDMADE EMBROIDERY</span>
+        <h2 class="hero-title">用溫暖針線，記錄心動的瞬間 🐶</h2>
+        <p class="hero-desc">精緻刺繡徽章、客製名畫吊飾、隨身追星小卡套與專屬書衣・隨時私訊為您訂製專屬心意</p>
+      </div>
+    </section>
+
+    <!-- 搜尋與分類選單控制區 -->
+    <section class="controls-container">
+      <div class="search-filter-row">
+        <!-- 搜尋輸入框 -->
+        <div class="search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" class="search-input" placeholder="搜尋商品名稱、標籤或關鍵字..." oninput="handleSearch(this.value)">
+        </div>
+
+        <div class="right-tools-group">
+          <!-- 圖片比例呈現模式切換（完整呈現 / 滿版填滿） -->
+          <button id="toggle-img-mode-btn" class="tool-pill-btn" onclick="toggleImageDisplayMode()" title="切換圖片呈現模式">
+            <span id="img-mode-icon">🖼️</span>
+            <span id="img-mode-text">圖片：完整呈現</span>
+          </button>
+
+          <!-- 最愛篩選按鈕 -->
+          <button id="toggle-fav-view" class="fav-filter-btn">
+            <span>❤️</span>
+            <span id="fav-btn-label">我的最愛 (0)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 分類標籤導覽列 -->
+      <div class="category-filter-bar">
+        <div class="category-nav" id="category-nav">
+          <button class="cat-btn active" onclick="setCategory('全部')">全部商品</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 商品網格 -->
+    <section class="product-grid" id="product-grid">
+      <div class="status-msg">
+        <span class="status-msg-icon">🧵</span>
+        正在為您載入最新商品資料...
+      </div>
+    </section>
+  </main>
+
+  <!-- 商品詳情檢視區塊 -->
+  <section id="detail-view">
+    <div class="detail-card">
+      <div class="detail-top-nav">
+        <button class="back-btn" onclick="hideDetail()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          返回商品列表
+        </button>
+        <span style="font-size: 13px; color: var(--text-muted);">商品詳情</span>
+      </div>
+      <div id="detail-container"></div>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>Doggy Embroidery 刺繡選品所</h2>
+        <p>用心勾勒每一次相遇 ✦ 手作刺繡・追星日常・客製禮物</p>
+      </div>
+      <div class="footer-links">
+        <a id="footer-ig-link" href="https://instagram.com/" target="_blank" class="social-btn ig">
+          <span>追蹤 IG 小盒子</span>
+        </a>
+        <a id="footer-line-link" href="https://line.me/" target="_blank" class="social-btn line">
+          <span>LINE 聯繫詢價</span>
+        </a>
+      </div>
+      <div class="footer-copy">
+        © 2026 Doggy Embroidery. All rights reserved.
+      </div>
+    </div>
+  </footer>
 
   <script>
-    // 你的 CSV 網址（發布到網路的 CSV 連結）
+    // ==========================================
+    // 品牌與社群基本設定 (請隨時替換為您的社群帳號)
+    // ==========================================
+    const BRAND_CONFIG = {
+      brandName: "Doggy Embroidery",
+      brandSubtitle: "手工刺繡・客製配件・追星選品",
+      instagramUrl: "https://instagram.com/", // 請替換為您的 IG 帳號網址 (例如: https://instagram.com/your_shop)
+      lineUrl: "https://line.me/",           // 請替換為您的 LINE 官方帳號網址
+    };
+
+    // 套用社群連結到導覽列與頁尾
+    if (BRAND_CONFIG.instagramUrl) {
+      document.getElementById('nav-ig-link').href = BRAND_CONFIG.instagramUrl;
+      document.getElementById('footer-ig-link').href = BRAND_CONFIG.instagramUrl;
+    }
+    if (BRAND_CONFIG.lineUrl) {
+      document.getElementById('nav-line-link').href = BRAND_CONFIG.lineUrl;
+      document.getElementById('footer-line-link').href = BRAND_CONFIG.lineUrl;
+    }
+
+    // Google 試算表 CSV 網址（已發布到網路的 CSV 連結）
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJ3LAb3l4m1BxRdcNH9UsMFXPbRwMuvSAXLbjm3XVYN8o_CVsQQQQO0YA9zgNNAXcys_5LqWdzehok/pub?output=csv";
 
-    // 預設資料：依據您目前的試算表結構與商品資料設定（離線或載入中也能直接展示）
+    // 預設/備援商品資料（若未連網或載入中先立即呈現）
     let productsData = [
       {
         id: "p01",
         img: "images/badge.jpg",
         tag: "新品",
         title: "徽章",
-        desc: "精美造型徽章",
+        desc: "精美造型徽章，手工細膩刺繡，點綴包包與外套的最佳配件。",
         price: "200",
-        link: "https://www.google.com/?client=safari&channel=mac_bm",
+        link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
-        category: "配件"
+        category: "追星小物"
+      },
+      {
+        id: "p02",
+        img: "images/passport_cover.jpg",
+        tag: "現貨",
+        title: "行李掛牌",
+        desc: "旅遊必備行李標籤掛牌，高辨識度防丟失。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "追星小物"
+      },
+      {
+        id: "p03",
+        img: "images/luggage_tag.jpg",
+        tag: "熱賣",
+        title: "護照套",
+        desc: "質感護照保護套，外出旅遊拍照滿分必備品。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "追星小物"
+      },
+      {
+        id: "p04",
+        img: "images/book_cover.jpg",
+        tag: "新品",
+        title: "名畫吊飾",
+        desc: "藝術風格名畫造型吊飾，精緻微型刺繡工藝。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "追星小物"
+      },
+      {
+        id: "p05",
+        img: "images/card_holder.jpg",
+        tag: "現貨",
+        title: "小卡套",
+        desc: "隨身透明小卡收納套，守護最愛的本命小卡。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "追星小物"
+      },
+      {
+        id: "p06",
+        img: "images/painting_charm.jpeg",
+        tag: "熱賣",
+        title: "書衣",
+        desc: "布藝手感書籍保護套，文青日常與手帳首選。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "追星小物"
+      },
+      {
+        id: "p07",
+        img: "images/croissant.png",
+        tag: "限量",
+        title: "可頌",
+        desc: "超萌可頌立體刺繡客製化掛飾，香氣四溢的可愛感。",
+        price: "-",
+        link: BRAND_CONFIG.instagramUrl,
+        btnText: "私訊",
+        category: "吊飾"
       }
     ];
 
-    let currentCategory = '全部'; // 紀錄目前選擇的分類
+    let currentCategory = '全部';
     let showingOnlyFavorites = false;
+    let searchQuery = '';
+    let isFillMode = false; // 預設完整呈現 (contain)，保證不裁切上下與後半段
 
     const gridContainer = document.getElementById('product-grid');
     const categoryNav = document.getElementById('category-nav');
+    const favBtnLabel = document.getElementById('fav-btn-label');
+
+    // === 圖片顯示模式切換（完整呈現 vs 滿版填滿） ===
+    window.toggleImageDisplayMode = function() {
+      isFillMode = !isFillMode;
+      const btnText = document.getElementById('img-mode-text');
+      const btnIcon = document.getElementById('img-mode-icon');
+      if (isFillMode) {
+        document.body.classList.add('img-fill-mode');
+        if (btnText) btnText.innerText = "圖片：滿版填滿";
+        if (btnIcon) btnIcon.innerText = "🔲";
+      } else {
+        document.body.classList.remove('img-fill-mode');
+        if (btnText) btnText.innerText = "圖片：完整呈現";
+        if (btnIcon) btnIcon.innerText = "🖼️";
+      }
+    };
 
     // === 擷取 Google Drive 檔案 ID ===
     function extractDriveId(url) {
@@ -97,23 +1208,20 @@
       return match ? match[1] : '';
     }
 
-    // === 自動處理圖片網址（支援 images/ 或 image/ 本地路徑、純檔名、Google Drive、外部網址） ===
+    // === 格式化圖片網址（支援 本地 images/、純檔名、Google Drive、外部 CDN） ===
     function formatImageUrl(url) {
       if (!url) return '';
       url = url.trim();
 
-      // 1. 若是 Google Drive 雲端硬碟連結，自動轉換為縮圖網址
       const driveId = extractDriveId(url);
       if (driveId) {
         return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1000`;
       }
 
-      // 2. 若是完整的 http/https 外部網址，直接返回
       if (url.startsWith('http://') || url.startsWith('https://')) {
         return url;
       }
 
-      // 3. 本地路徑支援：若試算表只填寫了檔名（如 "badge.jpg" 或 "徽章.jpg"），自動加上 "images/"
       if (!url.startsWith('images/') && !url.startsWith('image/') && !url.startsWith('./')) {
         return `images/${url}`;
       }
@@ -121,7 +1229,7 @@
       return url;
     }
 
-    // === 圖片智慧載入容錯（若 images/ 找不到自動嘗試 image/，Google Drive 失敗嘗試備援 CDN） ===
+    // === 圖片載入錯誤容錯處理 ===
     window.handleImageError = function(img) {
       const src = img.getAttribute('src') || '';
       if (!img.dataset.retry) {
@@ -141,33 +1249,79 @@
       }
     };
 
-    // === 動態產生分類選單 ===
-    function generateCategoryButtons() {
-      // 從資料中萃取出所有不重複的分類 (排除空白)
-      const categories = [...new Set(productsData.map(p => p.category ? p.category.trim() : ''))].filter(c => c);
-      
-      // 重置按鈕區塊，加入「全部」
-      categoryNav.innerHTML = `<button class="cat-btn ${currentCategory === '全部' ? 'active' : ''}" onclick="setCategory('全部')">全部商品</button>`;
-      
-      // 產生其他分類按鈕
-      categories.forEach(cat => {
-        categoryNav.innerHTML += `<button class="cat-btn ${currentCategory === cat ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>`;
-      });
+    // === 格式化價格顯示（避免顯示 NT$ - 或空值） ===
+    function formatPriceHtml(price) {
+      if (!price || price === '-' || String(price).trim() === '' || String(price).trim() === '洽詢') {
+        return `<span class="price-inquire">私訊洽詢</span>`;
+      }
+      const rawStr = String(price).trim();
+      if (rawStr.includes('$')) {
+        return `<span class="price-val">${rawStr}</span>`;
+      }
+      const numOnly = rawStr.replace(/[^\d.]/g, '');
+      if (numOnly) {
+        return `<span class="price-currency">NT$</span> <span class="price-val">${Number(numOnly).toLocaleString()}</span>`;
+      }
+      return `<span class="price-val">${rawStr}</span>`;
     }
 
-    // === 點擊切換分類 ===
+    // === 標籤顏色類別 ===
+    function getTagClass(tag) {
+      if (!tag) return '';
+      if (tag.includes('新')) return 'tag-new';
+      if (tag.includes('現貨')) return 'tag-stock';
+      if (tag.includes('熱') || tag.includes('限')) return 'tag-hot';
+      return 'tag-default';
+    }
+
+    // === 處理外連私訊或預設社群連結 ===
+    function resolveActionLink(link) {
+      if (!link || link.trim() === '' || link.includes('google.com/?client=safari')) {
+        return BRAND_CONFIG.instagramUrl || '#';
+      }
+      return link.trim();
+    }
+
+    // === 動態產生分類標籤按鈕 ===
+    function generateCategoryButtons() {
+      const categories = [...new Set(productsData.map(p => p.category ? p.category.trim() : ''))].filter(Boolean);
+
+      let html = `<button class="cat-btn ${currentCategory === '全部' ? 'active' : ''}" onclick="setCategory('全部')">全部商品</button>`;
+      categories.forEach(cat => {
+        html += `<button class="cat-btn ${currentCategory === cat ? 'active' : ''}" onclick="setCategory('${cat}')">${cat}</button>`;
+      });
+      categoryNav.innerHTML = html;
+    }
+
+    // === 切換分類 ===
     window.setCategory = function(cat) {
       currentCategory = cat;
-      showingOnlyFavorites = false; 
+      showingOnlyFavorites = false;
       document.getElementById('toggle-fav-view').classList.remove('active');
-      document.getElementById('toggle-fav-view').innerText = "只顯示我的最愛 ❤️";
-      
       generateCategoryButtons();
       renderProducts();
     };
 
+    // === 搜尋關鍵字處理 ===
+    window.handleSearch = function(val) {
+      searchQuery = val.trim().toLowerCase();
+      renderProducts();
+    };
+
+    // === 我的最愛儲存 ===
     function getFavorites() {
-      return JSON.parse(localStorage.getItem('my_favorites') || '[]');
+      try {
+        return JSON.parse(localStorage.getItem('my_favorites') || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function updateFavCountBadge() {
+      const favs = getFavorites();
+      if (favBtnLabel) {
+        favBtnLabel.innerText = `我的最愛 (${favs.length})`;
+      }
     }
 
     window.toggleFavorite = function(event, productId, fromDetail = false) {
@@ -179,100 +1333,165 @@
         favs.push(productId);
       }
       localStorage.setItem('my_favorites', JSON.stringify(favs));
+      updateFavCountBadge();
       renderProducts();
-      if (fromDetail) showDetail(productId); 
+      if (fromDetail) showDetail(productId);
     };
 
+    // === 渲染商品列表 ===
     function renderProducts() {
       const favs = getFavorites();
-      gridContainer.innerHTML = ''; 
-      
+      updateFavCountBadge();
+      gridContainer.innerHTML = '';
+
       let displayProducts = productsData;
-      
+
       // 1. 分類過濾
       if (currentCategory !== '全部') {
         displayProducts = displayProducts.filter(p => (p.category ? p.category.trim() : '') === currentCategory);
       }
 
-      // 2. 最愛過濾
+      // 2. 我的最愛過濾
       if (showingOnlyFavorites) {
         displayProducts = displayProducts.filter(p => favs.includes(p.id));
       }
 
+      // 3. 關鍵字搜尋過濾
+      if (searchQuery !== '') {
+        displayProducts = displayProducts.filter(p => {
+          const title = (p.title || '').toLowerCase();
+          const desc = (p.desc || '').toLowerCase();
+          const tag = (p.tag || '').toLowerCase();
+          const cat = (p.category || '').toLowerCase();
+          return title.includes(searchQuery) || desc.includes(searchQuery) || tag.includes(searchQuery) || cat.includes(searchQuery);
+        });
+      }
+
+      // 空白狀態處理
       if (displayProducts.length === 0) {
-        gridContainer.innerHTML = `<div class="status-msg">此分類目前沒有商品。</div>`;
+        gridContainer.innerHTML = `
+          <div class="status-msg">
+            <span class="status-msg-icon">🔍</span>
+            <p style="font-weight:600; font-size:16px; margin-bottom:4px;">沒有找到符合的商品</p>
+            <p style="font-size:13px; color:var(--text-light);">請嘗試更換分類標籤，或清除搜尋關鍵字看看喔！</p>
+          </div>
+        `;
         return;
       }
 
+      // 產生商品卡片
       displayProducts.forEach(product => {
         const isFav = favs.includes(product.id);
         const imgUrl = formatImageUrl(product.img);
-        const priceDisplay = String(product.price).includes('$') ? product.price : `NT$ ${product.price}`;
+        const priceHtml = formatPriceHtml(product.price);
+        const tagClass = getTagClass(product.tag);
+        const actionUrl = resolveActionLink(product.link);
+        const btnLabel = product.btnText || '私訊詢問';
 
         gridContainer.innerHTML += `
           <div class="product-card" onclick="showDetail('${product.id}')">
             <div class="img-container">
               <img class="product-img" src="${imgUrl}" alt="${product.title || ''}" loading="lazy" onerror="handleImageError(this)">
-              <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite(event, '${product.id}')">${isFav ? '❤️' : '🤍'}</button>
+              <button class="fav-btn ${isFav ? 'active' : ''}" title="${isFav ? '移除最愛' : '加入最愛'}" onclick="toggleFavorite(event, '${product.id}')">
+                ${isFav ? '❤️' : '🤍'}
+              </button>
             </div>
             <div class="product-info">
-              ${product.tag ? `<span class="tag">${product.tag}</span>` : ''}
-              <h3 class="product-title">${product.title || ''}</h3>
-              ${product.desc ? `<p class="product-desc">${product.desc}</p>` : ''}
-              <div class="product-price">${priceDisplay}</div>
-              <a class="action-btn" href="${product.link || '#'}" target="_blank" onclick="event.stopPropagation()">${product.btnText || '私訊'}</a>
+              <div class="tag-category-row">
+                ${product.tag ? `<span class="tag ${tagClass}">${product.tag}</span>` : ''}
+                ${product.category ? `<span class="category-label">${product.category}</span>` : ''}
+              </div>
+              <h3 class="product-title">${product.title || '刺繡手作配件'}</h3>
+              <p class="product-desc">${product.desc || '精美手作刺繡日常配件'}</p>
+              <div class="price-action-row">
+                <div class="product-price">${priceHtml}</div>
+                <a class="action-btn" href="${actionUrl}" target="_blank" onclick="event.stopPropagation()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  ${btnLabel}
+                </a>
+              </div>
             </div>
           </div>
         `;
       });
     }
 
+    // === 最愛篩選按鈕點擊切換 ===
     document.getElementById('toggle-fav-view').addEventListener('click', (e) => {
       showingOnlyFavorites = !showingOnlyFavorites;
-      const btn = e.target;
+      const btn = document.getElementById('toggle-fav-view');
       if (showingOnlyFavorites) {
         btn.classList.add('active');
-        btn.innerText = "顯示所有商品";
       } else {
         btn.classList.remove('active');
-        btn.innerText = "只顯示我的最愛 ❤️";
       }
       renderProducts();
     });
 
+    // === 顯示商品詳細視圖 ===
     window.showDetail = function(productId) {
       const product = productsData.find(p => p.id === productId);
       if (!product) return;
       const isFav = getFavorites().includes(product.id);
       const imgUrl = formatImageUrl(product.img);
-      const priceDisplay = String(product.price).includes('$') ? product.price : `NT$ ${product.price}`;
+      const priceHtml = formatPriceHtml(product.price);
+      const tagClass = getTagClass(product.tag);
+      const actionUrl = resolveActionLink(product.link);
+      const btnLabel = product.btnText || '私訊詢問';
 
       document.getElementById('list-view').style.display = 'none';
       document.getElementById('detail-view').style.display = 'block';
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
       document.getElementById('detail-container').innerHTML = `
         <div class="detail-content">
           <div class="detail-img-box">
             <img src="${imgUrl}" alt="${product.title || ''}" onerror="handleImageError(this)">
-            <button class="fav-btn ${isFav ? 'active' : ''}" style="top:20px; right:20px; width:44px; height:44px; font-size:24px;" onclick="toggleFavorite(event, '${product.id}', true)">${isFav ? '❤️' : '🤍'}</button>
+            <button class="fav-btn ${isFav ? 'active' : ''}" style="top:16px; right:16px; width:44px; height:44px; font-size:20px;" onclick="toggleFavorite(event, '${product.id}', true)">
+              ${isFav ? '❤️' : '🤍'}
+            </button>
           </div>
           <div class="detail-info-box">
-            ${product.tag ? `<span class="tag">${product.tag}</span>` : ''}
-            <h1 style="margin:10px 0;">${product.title || ''}</h1>
-            ${product.desc ? `<p style="color:#4b5563; line-height:1.6; margin-bottom:24px;">${product.desc}</p>` : ''}
-            <div style="font-size:28px; font-weight:bold; color:#e11d48; margin-bottom:24px;">${priceDisplay}</div>
-            <a style="text-align:center; background:#111827; color:#fff; padding:14px; border-radius:8px; text-decoration:none; font-weight:bold;" href="${product.link || '#'}" target="_blank">${product.btnText || '私訊'}</a>
+            <div class="detail-heading">
+              <div class="tag-category-row">
+                ${product.tag ? `<span class="tag ${tagClass}">${product.tag}</span>` : ''}
+                ${product.category ? `<span class="category-label">${product.category}</span>` : ''}
+              </div>
+              <h1>${product.title || '手工刺繡選品'}</h1>
+              <div class="detail-desc">${product.desc || '全手作質感刺繡，可作為日常裝飾或客製送禮首選。'}</div>
+            </div>
+
+            <div class="detail-price-box">
+              <span style="font-size:14px; color:var(--text-muted); font-weight:600;">商品價格</span>
+              <div class="detail-price-val">${priceHtml}</div>
+            </div>
+
+            <div class="order-tips-box">
+              <strong>💡 如何訂購或詢價？</strong>
+              點擊下方私訊按鈕，將喜歡的商品截圖發送至我們的 Instagram 或 LINE 小盒子，即可與店長溝通訂製內容、確認庫存與排單時間！
+            </div>
+
+            <div class="detail-cta-row">
+              <a class="cta-primary" href="${actionUrl}" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                ${btnLabel} (截圖私訊訂購)
+              </a>
+              <a class="cta-secondary" href="${BRAND_CONFIG.instagramUrl}" target="_blank">
+                <span>前往 Instagram 看更多實拍照</span>
+              </a>
+            </div>
           </div>
         </div>
       `;
     };
 
+    // === 隱藏商品詳細視圖 ===
     window.hideDetail = function() {
       document.getElementById('detail-view').style.display = 'none';
       document.getElementById('list-view').style.display = 'block';
     };
 
+    // === 從 Google 試算表 CSV 即時載入 ===
     function loadDataFromCSV() {
       Papa.parse(CSV_URL, {
         download: true,
@@ -292,14 +1511,15 @@
           }
         },
         error: function(err) {
-          console.warn("CSV 連線載入失敗，維持展示預設資料", err);
+          console.warn("Google 試算表 CSV 連線中斷，已維持呈現預設商品資料", err);
         }
       });
     }
 
-    // 初始化頁面（先顯示預設商品，再同步 Google 試算表最新資料）
+    // === 初始化頁面 ===
     generateCategoryButtons();
     renderProducts();
+    updateFavCountBadge();
     loadDataFromCSV();
   </script>
 </body>
