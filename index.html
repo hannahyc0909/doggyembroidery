@@ -39,7 +39,7 @@
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
-      --site-max-width: 1440px; /* 版面拉大，讓寬螢幕與平板空間更寬闊充裕 */
+      --site-max-width: 1440px; /* 拉大版面範圍 */
     }
 
     * {
@@ -63,7 +63,7 @@
       color: inherit;
     }
 
-    /* === 公告欄 Announcement Bar === */
+    /* === 公告欄 === */
     .announcement-bar {
       background: linear-gradient(90deg, #fcefe8, #fdf4f0);
       color: #9c5c42;
@@ -75,7 +75,7 @@
       letter-spacing: 0.3px;
     }
 
-    /* === 頂部導覽列 Navbar === */
+    /* === 頂部導覽列 === */
     .site-header {
       background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
@@ -132,17 +132,46 @@
       margin-top: 2px;
     }
 
-    .social-links {
+    /* 頁面導覽選單 */
+    .nav-right-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-menu {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: #52525b;
+      padding: 7px 14px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link:hover {
+      color: #2e2621;
+      background: #f4efe9;
+    }
+
+    .nav-link.active {
+      background: #2e2621;
+      color: #ffffff;
     }
 
     .social-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 7px 14px;
       border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
@@ -158,7 +187,6 @@
     }
     .social-btn.ig:hover {
       background: #fae1e7;
-      transform: translateY(-1px);
     }
 
     .social-btn.line {
@@ -168,75 +196,19 @@
     }
     .social-btn.line:hover {
       background: #dcfce7;
-      transform: translateY(-1px);
     }
 
     .social-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       fill: currentColor;
-    }
-
-    /* === Hero 品牌主橫幅 === */
-    .hero-section {
-      max-width: var(--site-max-width);
-      width: 100%;
-      margin: 20px auto 12px;
-      padding: 0 24px;
-    }
-
-    .hero-card {
-      background: linear-gradient(135deg, #fff7f2 0%, #fff 100%);
-      border: 1px solid #f5e8df;
-      border-radius: var(--radius-lg);
-      padding: 32px 32px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .hero-card::after {
-      content: '🧵';
-      position: absolute;
-      right: 24px;
-      bottom: -15px;
-      font-size: 88px;
-      opacity: 0.12;
-      pointer-events: none;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      color: #b86246;
-      background: rgba(224, 122, 95, 0.12);
-      padding: 3px 12px;
-      border-radius: 20px;
-      margin-bottom: 10px;
-    }
-
-    .hero-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #2e2621;
-      margin-bottom: 8px;
-    }
-
-    .hero-desc {
-      font-size: 14px;
-      color: #716358;
-      max-width: 660px;
-      margin: 0 auto;
     }
 
     /* === 控制欄（搜尋、最愛、顯示模式） === */
     .controls-container {
       max-width: var(--site-max-width);
       width: 100%;
-      margin: 18px auto 24px;
+      margin: 24px auto 20px;
       padding: 0 24px;
     }
 
@@ -409,19 +381,19 @@
       border-color: #ded8ce;
     }
 
-    /* ★ 電腦版、平板、手機統一嚴格呈現 1:1 正方形圖框 ★ */
+    /* ★ 電腦、平板、手機統一為 1:1 正方形圖框 ★ */
     .img-container {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1; /* 1:1 正方形 */
-      background-color: #f8f6f2; /* 柔和淺米底色，使透明與各式比例圖片完美融入 */
+      aspect-ratio: 1 / 1;
+      background-color: #f8f6f2;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* ★ 預設完整顯示（contain）：絕不裁切上下或後半段任何內容 ★ */
+    /* ★ 預設完整顯示（contain）：不裁切任何內容 ★ */
     .product-img {
       width: 100%;
       height: 100%;
@@ -435,7 +407,7 @@
       transform: scale(1.04);
     }
 
-    /* 滿版模式切換 */
+    /* 滿版模式 */
     body.img-fill-mode .product-img {
       object-fit: cover;
       padding: 0;
@@ -606,7 +578,7 @@
     /* === 商品詳情頁面 Detail View === */
     #detail-view {
       display: none;
-      max-width: 1040px; /* 詳情視圖拉大範圍 */
+      max-width: 1040px;
       margin: 16px auto 60px;
       padding: 0 24px;
       width: 100%;
@@ -660,7 +632,7 @@
       }
     }
 
-    /* ★ 詳情頁大圖也嚴格保持 1:1 正方形，完整呈現不裁切 ★ */
+    /* 詳情頁大圖保持 1:1 正方形 */
     .detail-img-box {
       flex: 1.1;
       position: relative;
@@ -842,7 +814,7 @@
         gap: 18px;
         padding: 0 20px;
       }
-      .controls-container, .hero-section, .nav-container, .site-footer {
+      .controls-container, .nav-container, .site-footer {
         padding-left: 20px;
         padding-right: 20px;
       }
@@ -856,6 +828,8 @@
 
       .nav-container {
         padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
       }
 
       .brand-text h1 {
@@ -866,38 +840,28 @@
         display: none;
       }
 
+      .nav-menu {
+        gap: 6px;
+      }
+
+      .nav-link {
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
       .social-btn span {
-        display: none; /* 手機版只顯示圖標，維持版面精緻簡潔 */
-      }
-
-      .hero-section {
-        margin: 12px auto 8px;
-        padding: 0 12px;
-      }
-
-      .hero-card {
-        padding: 20px 16px;
-      }
-
-      .hero-title {
-        font-size: 20px;
-      }
-
-      .hero-desc {
-        font-size: 13px;
-        margin-bottom: 12px;
+        display: none;
       }
 
       .controls-container {
         padding: 0 12px;
-        margin: 12px auto 16px;
+        margin: 14px auto 16px;
       }
 
       .search-box {
         max-width: 100%;
       }
 
-      /* 手機版商品卡片維持雙欄正方形比例，瀏覽最舒適 */
       .product-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -912,7 +876,6 @@
         font-size: 14px;
       }
 
-      /* 手機版簡介顯示 2 行，不再隱藏 */
       .product-desc {
         font-size: 12px;
         margin-bottom: 8px;
@@ -948,7 +911,7 @@
 </head>
 <body>
 
-  <!-- 公告小跑馬燈 / 提示條 -->
+  <!-- 公告小跑馬燈 -->
   <div class="announcement-bar">
     🧵 每一針都是用心手作・追星小物與客製刺繡選品｜歡迎私訊小盒子訂購與詢價 ✨
   </div>
@@ -964,8 +927,13 @@
         </div>
       </div>
 
-      <!-- 社群連結快捷按鈕 -->
-      <div class="social-links">
+      <!-- 右側頁面選單與社群連結 -->
+      <div class="nav-right-group">
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-link active">商品選品</a>
+          <a href="about.html" class="nav-link">品牌介紹＆訂購須知</a>
+        </nav>
+
         <a id="nav-ig-link" href="https://instagram.com/" target="_blank" class="social-btn ig" title="追蹤我們的 Instagram">
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           <span>Instagram</span>
@@ -980,15 +948,6 @@
 
   <!-- 主內容列表區塊 -->
   <main id="list-view">
-    <!-- Hero 品牌簡介 -->
-    <section class="hero-section">
-      <div class="hero-card">
-        <span class="hero-tag">HANDMADE EMBROIDERY</span>
-        <h2 class="hero-title">用溫暖針線，記錄心動的瞬間 🐶</h2>
-        <p class="hero-desc">精緻刺繡徽章、客製名畫吊飾、隨身追星小卡套與專屬書衣・隨時私訊為您訂製專屬心意</p>
-      </div>
-    </section>
-
     <!-- 搜尋與分類選單控制區 -->
     <section class="controls-container">
       <div class="search-filter-row">
@@ -1058,12 +1017,8 @@
         <p>用心勾勒每一次相遇 ✦ 手作刺繡・追星日常・客製禮物</p>
       </div>
       <div class="footer-links">
-        <a id="footer-ig-link" href="https://instagram.com/" target="_blank" class="social-btn ig">
-          <span>追蹤 IG 小盒子</span>
-        </a>
-        <a id="footer-line-link" href="https://line.me/" target="_blank" class="social-btn line">
-          <span>LINE 聯繫詢價</span>
-        </a>
+        <a href="index.html" class="nav-link" style="padding: 4px 8px;">商品選品</a>
+        <a href="about.html" class="nav-link" style="padding: 4px 8px;">品牌介紹＆訂購須知</a>
       </div>
       <div class="footer-copy">
         © 2026 Doggy Embroidery. All rights reserved.
@@ -1085,11 +1040,9 @@
     // 套用社群連結到導覽列與頁尾
     if (BRAND_CONFIG.instagramUrl) {
       document.getElementById('nav-ig-link').href = BRAND_CONFIG.instagramUrl;
-      document.getElementById('footer-ig-link').href = BRAND_CONFIG.instagramUrl;
     }
     if (BRAND_CONFIG.lineUrl) {
       document.getElementById('nav-line-link').href = BRAND_CONFIG.lineUrl;
-      document.getElementById('footer-line-link').href = BRAND_CONFIG.lineUrl;
     }
 
     // Google 試算表 CSV 網址（已發布到網路的 CSV 連結）
@@ -1179,7 +1132,7 @@
     let currentCategory = '全部';
     let showingOnlyFavorites = false;
     let searchQuery = '';
-    let isFillMode = false; // 預設完整呈現 (contain)，保證不裁切上下與後半段
+    let isFillMode = false; // 預設完整呈現 (contain)，保證不裁切
 
     const gridContainer = document.getElementById('product-grid');
     const categoryNav = document.getElementById('category-nav');
@@ -1468,7 +1421,7 @@
 
             <div class="order-tips-box">
               <strong>💡 如何訂購或詢價？</strong>
-              點擊下方私訊按鈕，將喜歡的商品截圖發送至我們的 Instagram 或 LINE 小盒子，即可與店長溝通訂製內容、確認庫存與排單時間！
+              點擊下方私訊按鈕，將商品截圖發送至我們的 Instagram 或 LINE 小盒子即可完成預訂！完整客製流程歡迎查看 <a href="about.html" style="text-decoration:underline; font-weight:700; color:#8c5825;">品牌介紹＆訂購須知</a>。
             </div>
 
             <div class="detail-cta-row">
@@ -1523,4 +1476,5 @@
     loadDataFromCSV();
   </script>
 </body>
+</html>
 </html>

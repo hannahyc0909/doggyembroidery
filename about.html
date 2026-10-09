@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>品牌介紹 ＆ 訂購須知 ｜ Doggy Embroidery 刺繡選品所</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --brand-brown: #5c4033;
+      --brand-accent: #e07a5f;
+      --bg-main: #faf9f6;
+      --bg-card: #ffffff;
+      --text-main: #27272a;
+      --text-muted: #71717a;
+      --text-light: #a1a1aa;
+      --border-color: #ebe7df;
+      --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.03);
+      --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.06);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --site-max-width: 1200px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* === 公告欄 === */
+    .announcement-bar {
+      background: linear-gradient(90deg, #fcefe8, #fdf4f0);
+      color: #9c5c42;
+      font-size: 13px;
+      padding: 8px 16px;
+      text-align: center;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(224, 122, 95, 0.15);
+      letter-spacing: 0.3px;
+    }
+
+    /* === 頂部導覽列 === */
+    .site-header {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav-container {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: #fbf0ea;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #fae1d6;
+    }
+
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2e2621;
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: #52525b;
+      padding: 6px 14px;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover {
+      color: #2e2621;
+      background: #f4efe9;
+    }
+
+    .nav-link.active {
+      background: #2e2621;
+      color: #ffffff;
+    }
+
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .social-btn.ig {
+      background: #fdf2f4;
+      color: #d82b6b;
+      border-color: #fbd6df;
+    }
+    .social-btn.ig:hover {
+      background: #fae1e7;
+    }
+
+    .social-btn svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    /* === 主內容區塊 === */
+    .about-main {
+      max-width: 900px;
+      width: 100%;
+      margin: 36px auto 70px;
+      padding: 0 24px;
+    }
+
+    /* 品牌故事橫幅卡片 */
+    .brand-hero-card {
+      background: linear-gradient(135deg, #fff7f2 0%, #ffffff 100%);
+      border: 1px solid #f5e8df;
+      border-radius: var(--radius-lg);
+      padding: 44px 36px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-hero-card::after {
+      content: '🪡';
+      position: absolute;
+      right: 20px;
+      bottom: -15px;
+      font-size: 90px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      color: #b86246;
+      background: rgba(224, 122, 95, 0.12);
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .brand-hero-title {
+      font-size: 30px;
+      font-weight: 800;
+      color: #2e2621;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .brand-hero-text {
+      font-size: 15px;
+      color: #5c4f45;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* 品牌三大特色 */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .feature-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* 內容小分節 */
+    .section-block {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f2ede6;
+    }
+
+    /* 訂購 4 步驟 */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #faf8f5;
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid #f1eae2;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #2e2621;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-info h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 4px;
+    }
+
+    .step-info p {
+      font-size: 13px;
+      color: #61564f;
+      line-height: 1.6;
+    }
+
+    /* FAQ 常見問題 */
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .faq-item {
+      background: #faf8f5;
+      padding: 18px 20px;
+      border-radius: 12px;
+      border: 1px solid #f1eae2;
+    }
+
+    .faq-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .faq-q::before {
+      content: 'Q';
+      color: #c2410c;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .faq-a {
+      font-size: 13px;
+      color: #61564f;
+      line-height: 1.65;
+      padding-left: 20px;
+    }
+
+    /* 底部行動呼籲 CTA */
+    .cta-box {
+      background: linear-gradient(135deg, #2e2621 0%, #4a3d35 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
+      text-align: center;
+      margin-top: 40px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .cta-box h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .cta-box p {
+      font-size: 14px;
+      color: #d6cecb;
+      margin-bottom: 24px;
+      max-width: 560px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #ffffff;
+      color: #2e2621;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      background: #fbf7f4;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* === 頁尾 === */
+    .site-footer {
+      margin-top: auto;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 40px 24px 30px;
+    }
+
+    .footer-content {
+      max-width: var(--site-max-width);
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .footer-brand h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2e2621;
+      margin-bottom: 6px;
+    }
+
+    .footer-brand p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      width: 100%;
+      text-align: center;
+      padding-top: 24px;
+      margin-top: 24px;
+      border-top: 1px solid #f2ede6;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    /* === 響應式優化 === */
+    @media (max-width: 768px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .brand-hero-card {
+        padding: 30px 20px;
+      }
+
+      .brand-hero-title {
+        font-size: 24px;
+      }
+
+      .section-block {
+        padding: 24px 18px;
+      }
+
+      .nav-menu {
+        gap: 8px;
+      }
+
+      .nav-link {
+        font-size: 13px;
+        padding: 5px 10px;
+      }
+
+      .social-btn span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 公告小跑馬燈 -->
+  <div class="announcement-bar">
+    🧵 每一針都是用心手作・追星小物與客製刺繡選品｜歡迎私訊小盒子訂購與詢價 ✨
+  </div>
+
+  <!-- 頂部導覽列 -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-area">
+        <div class="brand-logo-icon">🪡</div>
+        <div class="brand-text">
+          <h1>Doggy Embroidery</h1>
+          <p>手工刺繡・客製配件・追星選品</p>
+        </div>
+      </a>
+
+      <!-- 頁面選單與社群連結 -->
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">商品選品</a>
+        <a href="about.html" class="nav-link active">品牌介紹＆訂購須知</a>
+        <a id="nav-ig-link" href="https://instagram.com/" target="_blank" class="social-btn ig">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>Instagram</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="about-main">
+    <!-- 品牌故事橫幅 -->
+    <div class="brand-hero-card">
+      <span class="hero-badge">ABOUT DOGGY EMBROIDERY</span>
+      <h2 class="brand-hero-title">用溫暖針線，記錄日常心動的瞬間 🐶</h2>
+      <p class="brand-hero-text">
+        歡迎來到 <strong>Doggy Embroidery 刺繡選品所</strong>。<br>
+        我們專注於溫暖手作刺繡與追星生活小物，包含精緻刺繡徽章、客製名畫吊飾、隨身小卡套與質感書衣。<br>
+        每一件作品都凝聚著細膩針線與手作溫度，希望能為您的日常生活或喜愛的偶像應援增添一份獨一無二的專屬美好。
+      </p>
+    </div>
+
+    <!-- 品牌三大特色 -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🧵</span>
+        <h3 class="feature-title">細膩手作工藝</h3>
+        <p class="feature-desc">一針一線細心刺繡，細緻呈現紋理與手感，擁有印刷品無可比擬的溫度。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">✨</span>
+        <h3 class="feature-title">專屬客製服務</h3>
+        <p class="feature-desc">支援私訊溝通款式、文字與特殊配色，為自己或好友打造獨特的心意禮物。</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🎁</span>
+        <h3 class="feature-title">用心嚴選材質</h3>
+        <p class="feature-desc">精選親膚耐久布料、厚實配件與耐磨五金，讓手作陪伴您更長久的日常時光。</p>
+      </div>
+    </div>
+
+    <!-- 訂購與客製 4 步驟 -->
+    <div class="section-block">
+      <h2 class="section-title">📋 訂購與客製流程</h2>
+      <div class="steps-container">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-info">
+            <h3>挑選商品或提供客製想法</h3>
+            <p>在網站「商品選品」中截圖喜歡的現貨款式；若需客製，可準備喜歡的圖案、偶像代表元素或配色想法。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-info">
+            <h3>私訊 Instagram 或 LINE 小盒子</h3>
+            <p>將截圖或需求傳送給我們，店長會親自為您確認尺寸、配件細節，並提供明確報價與預計製作時間。</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-info">
+            <h3>確認訂單與排單製作</h3>
+            <p>確認款項後即正式進入排單製作。手作商品需一定工時細心雕琢，敬請耐心等候美好成果！</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-info">
+            <h3>拍照確認成品與細心寄出</h3>
+            <p>作品完工後，店長會先拍攝成品照片與您確認，隨後進行防撞包裝並儘速寄出至您指定的取件門市。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 訂購須知與常見問題 -->
+    <div class="section-block">
+      <h2 class="section-title">💡 訂購須知與常見問題 (FAQ)</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">手作製作時間需要多久？</div>
+          <div class="faq-a">現貨商品確認後約 1~3 個工作天寄出；客製化刺繡商品依複雜度與排單量約需 7~14 個工作天。如有特定送禮日期或急件需求，歡迎提早私訊詢問！</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">手作商品會有色差或微小差異嗎？</div>
+          <div class="faq-a">手工刺繡每件作品的針法、手感皆獨一無二，不同螢幕顯示器可能有些微色差，微小手作痕跡正是手作溫暖的迷人之處。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">刺繡商品該如何清潔與保養？</div>
+          <div class="faq-a">建議使用常溫水搭配中性清潔劑輕柔局部手洗，避免用力搓揉刺繡線條或高溫烘乾，陰乾即可保持平整美觀。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">支援哪些付款與配送方式？</div>
+          <div class="faq-a">目前支援銀行轉帳 / LINE Pay；配送支援 7-11、全家超商取貨或郵局掛號寄送。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部行動呼籲 -->
+    <div class="cta-box">
+      <h2>心動了嗎？歡迎私訊與我們聊聊 ✨</h2>
+      <p>無論是想要挑選現貨、客製專屬刺繡，或是有任何問題，都歡迎點擊下方按鈕隨時聯繫店長！</p>
+      <div class="cta-btns">
+        <a href="index.html" class="btn-primary">
+          <span>🛍️ 瀏覽所有商品</span>
+        </a>
+        <a id="cta-ig-link" href="https://instagram.com/" target="_blank" class="btn-secondary">
+          <span>📷 私訊 Instagram</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- 頁尾 -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h2>Doggy Embroidery 刺繡選品所</h2>
+        <p>用心勾勒每一次相遇 ✦ 手作刺繡・追星日常・客製禮物</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html" class="nav-link" style="padding: 4px 8px;">商品選品</a>
+        <a href="about.html" class="nav-link" style="padding: 4px 8px;">品牌介紹</a>
+      </div>
+      <div class="footer-copy">
+        © 2026 Doggy Embroidery. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const BRAND_CONFIG = {
+      instagramUrl: "https://instagram.com/", // 請替換為您的 IG 帳號網址
+      lineUrl: "https://line.me/",           // 請替換為您的 LINE 官方帳號
+    };
+
+    if (BRAND_CONFIG.instagramUrl) {
+      document.getElementById('nav-ig-link').href = BRAND_CONFIG.instagramUrl;
+      document.getElementById('cta-ig-link').href = BRAND_CONFIG.instagramUrl;
+    }
+  </script>
+</body>
+</html>
+
