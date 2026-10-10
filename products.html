@@ -270,26 +270,6 @@
       flex-wrap: wrap;
     }
 
-    .tool-pill-btn {
-      padding: 8px 16px;
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 600;
-      color: #52525b;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .tool-pill-btn:hover {
-      background: #f7f4f0;
-      border-color: #d4cdc5;
-    }
-
     .fav-filter-btn {
       padding: 8px 16px;
       background: #ffffff;
@@ -359,122 +339,6 @@
       box-shadow: 0 2px 8px rgba(46, 38, 33, 0.2);
     }
 
-    /* === 價格篩選與排序區塊 === */
-    .price-filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-top: 12px;
-      margin-top: 4px;
-      border-top: 1px dashed #ede8e1;
-    }
-
-    .price-pills-nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .filter-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #716358;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .price-btn {
-      padding: 6px 14px;
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 18px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 500;
-      color: #52525b;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .price-btn:hover {
-      background: #f7f4f0;
-      border-color: #d4cdc5;
-    }
-
-    .price-btn.active {
-      background: #c2410c;
-      color: #ffffff;
-      border-color: #c2410c;
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(194, 65, 12, 0.25);
-    }
-
-    .price-custom-and-sort {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .custom-price-inputs {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #ffffff;
-      padding: 3px 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-    }
-
-    .price-input {
-      width: 68px;
-      padding: 4px 6px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      font-size: 12px;
-      color: var(--text-main);
-      outline: none;
-      text-align: center;
-      background: #faf8f5;
-    }
-
-    .price-input:focus {
-      background: #ffffff;
-      border-color: #e07a5f;
-    }
-
-    .price-apply-btn {
-      background: #2e2621;
-      color: #ffffff;
-      border: none;
-      padding: 5px 12px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .price-apply-btn:hover {
-      background: #4a3d35;
-    }
-
-    .sort-select {
-      padding: 6px 12px;
-      border-radius: 18px;
-      border: 1px solid var(--border-color);
-      background: #ffffff;
-      font-size: 12px;
-      font-weight: 600;
-      color: #52525b;
-      outline: none;
-      cursor: pointer;
-    }
-
     /* === 商品網格列表 === */
     .product-grid {
       max-width: var(--site-max-width);
@@ -507,35 +371,25 @@
     }
 
     /* ★ 嚴格 1:1 正方形圖框 ★ */
+    /* 1:1 正方形圖框 */
     .img-container {
       position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
-      background-color: #f8f6f2;
+      background-color: #faf8f5;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    /* ★ 完整呈現（contain）：不裁切任何內容 ★ */
     .product-img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      padding: 6px;
+      object-fit: cover;
       transition: transform 0.35s ease;
       display: block;
     }
 
     .product-card:hover .product-img {
-      transform: scale(1.04);
-    }
-
-    /* 滿版模式 */
-    body.img-fill-mode .product-img {
-      object-fit: cover;
-      padding: 0;
+      transform: scale(1.05);
     }
 
     /* 愛心收藏按鈕 */
@@ -761,24 +615,15 @@
       flex: 1.1;
       position: relative;
       aspect-ratio: 1 / 1;
-      background: #f8f6f2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #faf8f5;
       overflow: hidden;
     }
 
     .detail-img-box img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      padding: 16px;
-      display: block;
-    }
-
-    body.img-fill-mode .detail-img-box img {
       object-fit: cover;
-      padding: 0;
+      display: block;
     }
 
     .detail-info-box {
@@ -986,24 +831,6 @@
         max-width: 100%;
       }
 
-      .price-filter-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .price-pills-nav {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 4px;
-        flex-wrap: nowrap;
-      }
-
-      .price-custom-and-sort {
-        width: 100%;
-        justify-content: space-between;
-      }
-
       .product-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
@@ -1107,12 +934,6 @@
         </div>
 
         <div class="right-tools-group">
-          <!-- 圖片比例呈現模式切換（完整呈現 / 滿版填滿） -->
-          <button id="toggle-img-mode-btn" class="tool-pill-btn" onclick="toggleImageDisplayMode()" title="切換圖片呈現模式">
-            <span id="img-mode-icon">🖼️</span>
-            <span id="img-mode-text">圖片：完整呈現</span>
-          </button>
-
           <!-- 最愛篩選按鈕 -->
           <button id="toggle-fav-view" class="fav-filter-btn">
             <span>❤️</span>
@@ -1125,35 +946,6 @@
       <div class="category-filter-bar">
         <div class="category-nav" id="category-nav">
           <button class="cat-btn active" onclick="setCategory('全部')">全部商品</button>
-        </div>
-      </div>
-
-      <!-- ★ 價格區間篩選與排序列 ★ -->
-      <div class="price-filter-bar">
-        <div class="price-pills-nav">
-          <span class="filter-label">💰 價格區間：</span>
-          <button class="price-btn active" data-range="all" onclick="setPriceRange('all')">全部價格</button>
-          <button class="price-btn" data-range="under200" onclick="setPriceRange('under200')">NT$ 200 以下</button>
-          <button class="price-btn" data-range="200-500" onclick="setPriceRange('200-500')">NT$ 200 - 500</button>
-          <button class="price-btn" data-range="above500" onclick="setPriceRange('above500')">NT$ 500 以上</button>
-          <button class="price-btn" data-range="inquire" onclick="setPriceRange('inquire')">私訊洽詢</button>
-        </div>
-
-        <div class="price-custom-and-sort">
-          <!-- 自訂價格輸入 -->
-          <div class="custom-price-inputs">
-            <input type="number" id="min-price" class="price-input" placeholder="最低價" min="0" step="50">
-            <span style="color:var(--text-light); font-size:12px;">~</span>
-            <input type="number" id="max-price" class="price-input" placeholder="最高價" min="0" step="50">
-            <button class="price-apply-btn" onclick="applyCustomPrice()">篩選</button>
-          </div>
-
-          <!-- 價格排序選單 -->
-          <select id="price-sort-select" class="sort-select" onchange="handleSortChange(this.value)">
-            <option value="default">預設排序</option>
-            <option value="price-asc">價格：由低到高 ↑</option>
-            <option value="price-desc">價格：由高到低 ↓</option>
-          </select>
         </div>
       </div>
     </section>
@@ -1263,7 +1055,7 @@
         tag: "現貨",
         title: "行李掛牌",
         desc: "旅遊必備行李標籤掛牌，高辨識度防丟失。",
-        price: "-",
+        price: "450",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "追星小物"
@@ -1274,7 +1066,7 @@
         tag: "熱賣",
         title: "護照套",
         desc: "質感護照保護套，外出旅遊拍照滿分必備品。",
-        price: "-",
+        price: "500",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "追星小物"
@@ -1285,7 +1077,7 @@
         tag: "新品",
         title: "名畫吊飾",
         desc: "藝術風格名畫造型吊飾，精緻微型刺繡工藝。",
-        price: "-",
+        price: "300",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "追星小物"
@@ -1296,7 +1088,7 @@
         tag: "現貨",
         title: "小卡套",
         desc: "隨身透明小卡收納套，守護最愛的本命小卡。",
-        price: "-",
+        price: "350",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "追星小物"
@@ -1307,7 +1099,7 @@
         tag: "熱賣",
         title: "書衣",
         desc: "布藝手感書籍保護套，文青日常與手帳首選。",
-        price: "-",
+        price: "500",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "追星小物"
@@ -1318,7 +1110,7 @@
         tag: "限量",
         title: "可頌",
         desc: "超萌可頌立體刺繡客製化掛飾，香氣四溢的可愛感。",
-        price: "-",
+        price: "250",
         link: BRAND_CONFIG.instagramUrl,
         btnText: "私訊",
         category: "吊飾"
@@ -1328,33 +1120,10 @@
     let currentCategory = '全部';
     let showingOnlyFavorites = false;
     let searchQuery = '';
-    let isFillMode = false;
-
-    // ★ 價格篩選與排序變數 ★
-    let currentPriceRange = 'all'; // 'all', 'under200', '200-500', 'above500', 'inquire', 'custom'
-    let customMinPrice = null;
-    let customMaxPrice = null;
-    let currentSort = 'default'; // 'default', 'price-asc', 'price-desc'
 
     const gridContainer = document.getElementById('product-grid');
     const categoryNav = document.getElementById('category-nav');
     const favBtnLabel = document.getElementById('fav-btn-label');
-
-    // === 圖片顯示模式切換（完整呈現 vs 滿版填滿） ===
-    window.toggleImageDisplayMode = function() {
-      isFillMode = !isFillMode;
-      const btnText = document.getElementById('img-mode-text');
-      const btnIcon = document.getElementById('img-mode-icon');
-      if (isFillMode) {
-        document.body.classList.add('img-fill-mode');
-        if (btnText) btnText.innerText = "圖片：滿版填滿";
-        if (btnIcon) btnIcon.innerText = "🔲";
-      } else {
-        document.body.classList.remove('img-fill-mode');
-        if (btnText) btnText.innerText = "圖片：完整呈現";
-        if (btnIcon) btnIcon.innerText = "🖼️";
-      }
-    };
 
     // === 擷取 Google Drive 檔案 ID ===
     function extractDriveId(url) {
@@ -1403,17 +1172,6 @@
         }
       }
     };
-
-    // === 擷取數值型價格（計算篩選與排序用） ===
-    function getNumericPrice(price) {
-      if (!price || price === '-' || String(price).trim() === '' || String(price).trim() === '洽詢') {
-        return null;
-      }
-      const cleanStr = String(price).replace(/[^\d.]/g, '');
-      if (!cleanStr) return null;
-      const num = parseFloat(cleanStr);
-      return isNaN(num) ? null : num;
-    }
 
     // === 格式化價格顯示（避免顯示 NT$ - 或空值） ===
     function formatPriceHtml(price) {
@@ -1465,54 +1223,6 @@
       showingOnlyFavorites = false;
       document.getElementById('toggle-fav-view').classList.remove('active');
       generateCategoryButtons();
-      renderProducts();
-    };
-
-    // === 快捷價格區間篩選 ===
-    window.setPriceRange = function(rangeKey) {
-      currentPriceRange = rangeKey;
-      customMinPrice = null;
-      customMaxPrice = null;
-
-      // 清空自訂輸入框
-      const minInput = document.getElementById('min-price');
-      const maxInput = document.getElementById('max-price');
-      if (minInput) minInput.value = '';
-      if (maxInput) maxInput.value = '';
-
-      // 更新按鈕 active 樣式
-      document.querySelectorAll('.price-btn').forEach(btn => {
-        if (btn.getAttribute('data-range') === rangeKey) {
-          btn.classList.add('active');
-        } else {
-          btn.classList.remove('active');
-        }
-      });
-
-      renderProducts();
-    };
-
-    // === 自訂價格區間篩選 ===
-    window.applyCustomPrice = function() {
-      const minVal = document.getElementById('min-price').value.trim();
-      const maxVal = document.getElementById('max-price').value.trim();
-
-      if (minVal === '' && maxVal === '') {
-        setPriceRange('all');
-        return;
-      }
-
-      customMinPrice = minVal !== '' ? parseFloat(minVal) : null;
-      customMaxPrice = maxVal !== '' ? parseFloat(maxVal) : null;
-      currentPriceRange = 'custom';
-
-      document.querySelectorAll('.price-btn').forEach(btn => btn.classList.remove('active'));
-      renderProducts();
-    };
-
-    // === 排序切換 ===
-    window.handleSortChange = function(val) {
-      currentSort = val;
       renderProducts();
     };
 
@@ -1581,61 +1291,13 @@
         });
       }
 
-      // 4. 價格區間篩選
-      if (currentPriceRange !== 'all') {
-        displayProducts = displayProducts.filter(p => {
-          const numPrice = getNumericPrice(p.price);
-
-          if (currentPriceRange === 'inquire') {
-            return numPrice === null;
-          }
-          if (currentPriceRange === 'under200') {
-            return numPrice !== null && numPrice <= 200;
-          }
-          if (currentPriceRange === '200-500') {
-            return numPrice !== null && numPrice >= 200 && numPrice <= 500;
-          }
-          if (currentPriceRange === 'above500') {
-            return numPrice !== null && numPrice >= 500;
-          }
-          if (currentPriceRange === 'custom') {
-            if (numPrice === null) return false;
-            if (customMinPrice !== null && numPrice < customMinPrice) return false;
-            if (customMaxPrice !== null && numPrice > customMaxPrice) return false;
-            return true;
-          }
-          return true;
-        });
-      }
-
-      // 5. 排序處理
-      if (currentSort === 'price-asc') {
-        displayProducts = [...displayProducts].sort((a, b) => {
-          const pa = getNumericPrice(a.price);
-          const pb = getNumericPrice(b.price);
-          if (pa === null && pb === null) return 0;
-          if (pa === null) return 1; // 私訊洽詢排在最後
-          if (pb === null) return -1;
-          return pa - pb;
-        });
-      } else if (currentSort === 'price-desc') {
-        displayProducts = [...displayProducts].sort((a, b) => {
-          const pa = getNumericPrice(a.price);
-          const pb = getNumericPrice(b.price);
-          if (pa === null && pb === null) return 0;
-          if (pa === null) return 1;
-          if (pb === null) return -1;
-          return pb - pa;
-        });
-      }
-
       // 空白狀態處理
       if (displayProducts.length === 0) {
         gridContainer.innerHTML = `
           <div class="status-msg">
             <span class="status-msg-icon">🔍</span>
             <p style="font-weight:600; font-size:16px; margin-bottom:4px;">沒有找到符合的商品</p>
-            <p style="font-size:13px; color:var(--text-light);">請嘗試更換分類標籤、調整價格區間，或清除搜尋關鍵字看看喔！</p>
+            <p style="font-size:13px; color:var(--text-light);">請嘗試更換分類標籤，或清除搜尋關鍵字看看喔！</p>
           </div>
         `;
         return;
