@@ -346,8 +346,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding-top: 10px;
-      margin-top: 2px;
+      padding-top: 12px;
+      margin-top: 4px;
       border-top: 1px dashed #ede8e1;
     }
 
@@ -999,7 +999,7 @@
         </div>
       </div>
 
-      <!-- 價格區間篩選 -->
+      <!-- 價格區間篩選按鈕列 -->
       <div class="price-filter-bar">
         <div class="price-pills-nav">
           <span class="filter-label">💰 價格：</span>
@@ -1093,12 +1093,10 @@
     updateLink('footer-threads-link', BRAND_CONFIG.threadsUrl);
     updateLink('footer-line-link', BRAND_CONFIG.lineUrl);
 
-    // Google 試算表發布的 CSV 網址（請替換為您的 Google 試算表發布連結）
+    // Google 試算表發布的 CSV 網址
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJ3LAb3l4m1BxRdcNH9UsMFXPbRwMuvSAXLbjm3XVYN8o_CVsQQQQO0YA9zgNNAXcys_5LqWdzehok/pub?output=csv";
 
-    // 商品資料變數（初始為空陣列，由 CSV 載入）
     let productsData = [];
-
     let currentCategory = '全部';
     let showingOnlyFavorites = false;
     let searchQuery = '';
